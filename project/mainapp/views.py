@@ -1,6 +1,6 @@
 from django.shortcuts import render, HttpResponse
 from django.http import JsonResponse
-from mainapp.models import State, City
+from mainapp.models import State, City, DailyRate
 import json
 from django.core.serializers.json import DjangoJSONEncoder
 # Create your views here.
@@ -17,7 +17,12 @@ def  get_cities(request):
 	return JsonResponse(data,safe=False)
 
 
-
+def get_rate(request):
+	city_id = 1
+	fuel_id = 1
+	data = DailyRate.objects.filter(city__id= city_id, fuel__id=fuel_id).values('price','date')
+	data = json.dumps(list(data),cls=DjangoJSONEncoder)
+	return JsonResponse(data,safe=False)
 '''
 Function  to map all state string in db
 
