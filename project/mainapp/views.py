@@ -6,7 +6,14 @@ from django.core.serializers.json import DjangoJSONEncoder
 from math import cos, asin, sqrt
 import requests
 from xml.dom import minidom
+from city_list import city
 # Create your views here.
+
+def pupolate_city_state_data():
+        for obj in city:
+                state_obj,temp = State.objects.get_or_create(name=obj['state'].toLowerCase())
+                city_obj = City.objects.get_or_create(name=obj['city'].toLowerCase(),state=state_obj)
+        return HttpResponse("Done")
 
 def get_states(request):
 	data = State.objects.all().values('id','name')
@@ -14,8 +21,7 @@ def get_states(request):
 	return JsonResponse(data,safe=False)
 
 def  get_cities(request):
-	state_id = 14
-	data = City.objects.filter(state_id=14).values('id','name')
+	data = City.objects.all().values('id','name')
 	data = json.dumps(list(data), cls=DjangoJSONEncoder)
 	return JsonResponse(data,safe=False)
 
