@@ -1,37 +1,37 @@
 from django.shortcuts import render, HttpResponse
 from django.http import JsonResponse
-from models import State, City, DailyRate
+from mainapp.models import State, City, DailyRate
 import json
 from django.core.serializers.json import DjangoJSONEncoder
 from math import cos, asin, sqrt
 import requests
 from xml.dom import minidom
-from city_list import city
+from mainapp.city_list import city
 # Create your views here.
 
 def pupolate_city_state_data():
         for obj in city:
-                state_obj,temp = State.objects.get_or_create(name=obj['state'].toLowerCase())
-                city_obj = City.objects.get_or_create(name=obj['city'].toLowerCase(),state=state_obj)
+                state_obj,temp = State.objects.get_or_create(name=obj['state'].lower())
+                city_obj = City.objects.get_or_create(name=obj['city'].lower(),state=state_obj)
         return HttpResponse("Done")
 
 def get_states(request):
-	data = State.objects.all().values('id','name')
-	data = json.dumps(list(data), cls=DjangoJSONEncoder)
-	return JsonResponse(data,safe=False)
+        data = State.objects.all().values('id','name')
+        data = json.dumps(list(data), cls=DjangoJSONEncoder)
+        return JsonResponse(data,safe=False)
 
 def  get_cities(request):
-	data = City.objects.all().values('id','name')
-	data = json.dumps(list(data), cls=DjangoJSONEncoder)
-	return JsonResponse(data,safe=False)
+        data = City.objects.all().values('id','name')
+        data = json.dumps(list(data), cls=DjangoJSONEncoder)
+        return JsonResponse(data,safe=False)
 
 
 def get_rate(request):
-	city_id = 1
-	fuel_id = 1
-	data = DailyRate.objects.filter(city__id= city_id, fuel__id=fuel_id).values('price','date')
-	data = json.dumps(list(data),cls=DjangoJSONEncoder)
-	return JsonResponse(data,safe=False)
+        city_id = 1
+        fuel_id = 1
+        data = DailyRate.objects.filter(city__id= city_id, fuel__id=fuel_id).values('price','date')
+        data = json.dumps(list(data),cls=DjangoJSONEncoder)
+        return JsonResponse(data,safe=False)
 
 
 
@@ -46,8 +46,8 @@ def nearest_city(request):
         All_city = City.objects.filter(state=City_obj.state)
 
         for cities_list in All_city:
-        	if(cities_list.name!=cityName):
-        		cities.append(cities_list.name)
+                if(cities_list.name!=cityName):
+                        cities.append(cities_list.name)
 
         cities_distance={}
 
@@ -75,7 +75,7 @@ def distaceBetweenTwoCity(lat1,lon1,lat2,lon2):
 def hpcl(request):
         cityName=request.GET['city']
         price=[]
-        code_for={'Andhra Pradesh':'AP1?1497810068505','Arunachal Pradesh':0,'Assam':'AS?1497810198948','Bihar':'BR?1497810276248','Chhattisgarh':'CH?1497810328900','Goa':'GA?1497812837117','Gujarat':'GJ?1497812860178','Haryana':'HR?1497812895379','Himachal Pradesh':'HP?1497812917333','Jammu & Kashmir':'JK?1497812934641','Jharkhand':'JH?1497812956639','Karnataka':'KA?1497812980614','Kerala':'KL?1497812997418','Madhya Pradesh':'MP?1497781879','Maharashtra':'MH?1497813023545','Manipur':'MN?1497813059119','Meghalaya':'ML?1497813041741','Mizoram':'MZ?1497813076853','Nagaland':'NL?1497813094298','Odisha':'OR?1497813112243','Punjab':'PB?1497813129232','Rajasthan':'RJ?1497813142871','Sikkim':'SK?1497813159354','Tamil Nadu':'TN?1497813184980','Telangana':'TG?1497813208623','Tripura':'TR?1497813226232','Uttar Pradesh':'UP?1497813241485','Uttarakhand':'UT?1497813263160','West Bengal':'WB?1497813279542'}
+        code_for={'andhra pradesh':'AP1?1497810068505','arunachal pradesh':0,'assam':'AS?1497810198948','bihar':'BR?1497810276248','chhattisgarh':'CH?1497810328900','goa':'GA?1497812837117','gujarat':'GJ?1497812860178','haryana':'HR?1497812895379','himachal pradesh':'HP?1497812917333','jammu & kashmir':'JK?1497812934641','jharkhand':'JH?1497812956639','karnataka':'KA?1497812980614','kerala':'KL?1497812997418','madhya pradesh':'MP?1497781879','maharashtra':'MH?1497813023545','manipur':'MN?1497813059119','meghalaya':'ML?1497813041741','mizoram':'MZ?1497813076853','nagaland':'NL?1497813094298','odisha':'OR?1497813112243','punjab':'PB?1497813129232','rajasthan':'RJ?1497813142871','sikkim':'SK?1497813159354','tamil nadu':'TN?1497813184980','telangana':'TG?1497813208623','tripura':'TR?1497813226232','uttar pradesh':'UP?1497813241485','uttarakhand':'UT?1497813263160','west bengal':'WB?1497813279542'}
         City_obj=City.objects.get(name=cityName)
         codeforGivenCity=code_for[str(City_obj.state)]
         
@@ -104,16 +104,16 @@ Function  to map all state string in db
 
 '''
 def pupulate_states():
-	state_list = ['Andhra Pradesh','Arunachal Pradesh','Assam','Bihar','Chhattisgarh','Goa','Gujarat','Haryana','Himachal Pradesh','Jammu & Kashmir','Jharkhand','Karnataka','Kerala','Madhya Pradesh','Maharashtra','Manipur','Meghalaya','Mizoram','Nagaland','Odisha','Punjab','Rajasthan','Sikkim','Tamil Nadu','Telangana','Tripura','Uttar Pradesh','Uttarakhand','West Bengal']
-	model_obj = []
-	for state in state_list:
-		model_obj.append(State(name=state))
-	State.objects.bulk_create(model_obj)
+        state_list = ['Andhra Pradesh','Arunachal Pradesh','Assam','Bihar','Chhattisgarh','Goa','Gujarat','Haryana','Himachal Pradesh','Jammu & Kashmir','Jharkhand','Karnataka','Kerala','Madhya Pradesh','Maharashtra','Manipur','Meghalaya','Mizoram','Nagaland','Odisha','Punjab','Rajasthan','Sikkim','Tamil Nadu','Telangana','Tripura','Uttar Pradesh','Uttarakhand','West Bengal']
+        model_obj = []
+        for state in state_list:
+                model_obj.append(State(name=state))
+        State.objects.bulk_create(model_obj)
 
-	print("populated")
-	
-
-
+        print("populated")
+        
 
 
-	
+
+
+        
