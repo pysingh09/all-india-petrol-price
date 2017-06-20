@@ -6,31 +6,6 @@ from django.core.serializers.json import DjangoJSONEncoder
 from math import cos, asin, sqrt
 import requests
 from xml.dom import minidom
-# Create your views here.
-
-'''
-'''
-# def get_fuel_rate():
-#         response = requests.post(url="https://fuelprice.p.mashape.com/",
-#           headers={
-#             "X-Mashape-Key": "jx4BiSi6U0mshgp6QifRhbg3YwAAp11sx6CjsnXQNhDiDnjalX",
-#             "Content-Type": "application/json",
-#             "Accept": "application/json"
-#           },
-#           data=("{\"fuel\":\"p\",\"state\":\"mh\"}")
-#         )
-#         response =  json.loads(response.text)
-#         hp_provider = FuelCompany.objects.get(name='hp')
-#         iocl_provider = FuelCompany.objects.get(name='iocl')
-#         for data in response['prices']['hp']:
-#                 for key in data:
-#                         city_name,price = key,data[key]
-#                 state_obj,is_new_state = State.objects.get_or_create(name=response['state'].lower())
-#                 city_obj,is_created = City.objects.get_or_create(name=city_name.lower(),state=state_obj)
-#                 fuel_obj, is_new_fuel = Fuel.objects.get_or_create(name=response['fuel'].lower())
-#                 rate_entry,is_update = DailyRate.objects.update_or_create(fuel=fuel_obj,city=city_obj, provider=hp_provider,price=price)
-#                 print("record inserted or updated")
-
 
 
 '''
@@ -56,15 +31,15 @@ def get_states(request):
         return JsonResponse(data,safe=False)
 
 def  get_cities(request):
-        data = City.objects.all().values('id','name')
+        state_id = request.GET['state_id']
+        data = City.objects.filter(state__id=state_id).values('id','name')
         data = json.dumps(list(data), cls=DjangoJSONEncoder)
         return JsonResponse(data,safe=False)
 
 
 def get_rate(request):
-        city_id = 1
-        fuel_id = 1
-        data = DailyRate.objects.filter(city__id= city_id, fuel__id=fuel_id).values('price','date')
+        city_id = request.GET['city_id']
+        data = DailyRate.objects.filter(city__id= city_id).values('price','fuel_id')
         data = json.dumps(list(data),cls=DjangoJSONEncoder)
         return JsonResponse(data,safe=False)
 
