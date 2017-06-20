@@ -1,20 +1,56 @@
 from django.shortcuts import render, HttpResponse
 from django.http import JsonResponse
-from mainapp.models import State, City, DailyRate
+from mainapp.models import State, City, DailyRate, Fuel, FuelCompany
 import json
 from django.core.serializers.json import DjangoJSONEncoder
 from math import cos, asin, sqrt
 import requests
 from xml.dom import minidom
-from mainapp.city_list import city
+from mainapp.utils.city_list import city
 # Create your views here.
 
+'''
+'''
+# def get_fuel_rate():
+#         response = requests.post(url="https://fuelprice.p.mashape.com/",
+#           headers={
+#             "X-Mashape-Key": "jx4BiSi6U0mshgp6QifRhbg3YwAAp11sx6CjsnXQNhDiDnjalX",
+#             "Content-Type": "application/json",
+#             "Accept": "application/json"
+#           },
+#           data=("{\"fuel\":\"p\",\"state\":\"mh\"}")
+#         )
+#         response =  json.loads(response.text)
+#         hp_provider = FuelCompany.objects.get(name='hp')
+#         iocl_provider = FuelCompany.objects.get(name='iocl')
+#         for data in response['prices']['hp']:
+#                 for key in data:
+#                         city_name,price = key,data[key]
+#                 state_obj,is_new_state = State.objects.get_or_create(name=response['state'].lower())
+#                 city_obj,is_created = City.objects.get_or_create(name=city_name.lower(),state=state_obj)
+#                 fuel_obj, is_new_fuel = Fuel.objects.get_or_create(name=response['fuel'].lower())
+#                 rate_entry,is_update = DailyRate.objects.update_or_create(fuel=fuel_obj,city=city_obj, provider=hp_provider,price=price)
+#                 print("record inserted or updated")
+
+
+
+'''
+This function populate all state and city data in the database in a single call
+'''
 def pupolate_city_state_data():
         for obj in city:
                 state_obj,temp = State.objects.get_or_create(name=obj['state'].lower())
                 city_obj = City.objects.get_or_create(name=obj['city'].lower(),state=state_obj)
         return HttpResponse("Done")
 
+
+def delete_all_city_state():
+        objs = State.objects.all()
+        for obj in objs:
+                obj.delete()
+'''
+Get all satates
+'''
 def get_states(request):
         data = State.objects.all().values('id','name')
         data = json.dumps(list(data), cls=DjangoJSONEncoder)
