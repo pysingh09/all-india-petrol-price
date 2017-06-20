@@ -29,7 +29,7 @@ def request_fuel(state_name,provider_obj,response_data,fuel_obj):
 
 
 
-@kronos.register('0 1 * * *')
+@kronos.register('0 7 * * *')
 def get_latest_fuel_rate():
     fuel_list = ['p','d']
     for item in fuel_list:
