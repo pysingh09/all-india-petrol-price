@@ -6,7 +6,6 @@ from django.core.serializers.json import DjangoJSONEncoder
 from math import cos, asin, sqrt
 import requests
 from xml.dom import minidom
-from . import city_list
 # Create your views here.
 
 '''
