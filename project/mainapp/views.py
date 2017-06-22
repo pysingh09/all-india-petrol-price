@@ -26,13 +26,17 @@ def delete_all_city_state():
 Get all satates
 '''
 def get_states(request):
-        data = State.objects.all().values('id','name')
+        data = State.objects.all().order_by('name').values('id','name')
+        for obj in data:
+                obj['name'] = obj['name'].title()
         data = json.dumps(list(data), cls=DjangoJSONEncoder)
         return JsonResponse(data,safe=False)
 
 def  get_cities(request):
         state_id = request.GET['state_id']
-        data = City.objects.filter(state__id=state_id).values('id','name')
+        data = City.objects.filter(state__id=state_id).order_by('name').values('id','name')
+        for obj in data:
+                obj['name'] = obj['name'].title()
         data = json.dumps(list(data), cls=DjangoJSONEncoder)
         return JsonResponse(data,safe=False)
 
