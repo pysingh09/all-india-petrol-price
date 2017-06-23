@@ -6,6 +6,8 @@ from django.core.serializers.json import DjangoJSONEncoder
 from math import cos, asin, sqrt
 import requests
 from xml.dom import minidom
+import logging
+logging.basicConfig(filename='mainapp.log',level=logging.DEBUG)
 
 
 '''
@@ -26,24 +28,30 @@ def delete_all_city_state():
 Get all satates
 '''
 def get_states(request):
+        logging.info("Request for All state")
         data = State.objects.all().order_by('name').values('id','name')
         for obj in data:
                 obj['name'] = obj['name'].title()
+        logging.info("Responded All state list %s",len(list(data)))
         data = json.dumps(list(data), cls=DjangoJSONEncoder)
         return JsonResponse(data,safe=False)
 
 def  get_cities(request):
         state_id = request.GET['state_id']
+        logging.info("Request for City with state_id %s ",state_id)
         data = City.objects.filter(state__id=state_id).order_by('name').values('id','name')
         for obj in data:
                 obj['name'] = obj['name'].title()
+        logging.info("Responded city list ",len(list(data)))
         data = json.dumps(list(data), cls=DjangoJSONEncoder)
         return JsonResponse(data,safe=False)
 
 
 def get_rate(request):
         city_id = request.GET['city_id']
+        logging.info("Request for fuel rate with city_id %s",city)
         data = DailyRate.objects.filter(city__id= city_id).values('price','fuel_id')
+        logging.info("Responded rate %s",data)
         data = json.dumps(list(data),cls=DjangoJSONEncoder)
         return JsonResponse(data,safe=False)
 
