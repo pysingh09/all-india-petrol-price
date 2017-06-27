@@ -11,10 +11,9 @@ from mainapp.constants import state_code
 def request_fuel(state_name,provider_obj,response_data,fuel_obj):
     # import pdb;pdb.set_trace()
     for data in response_data:
-        for key in data:
-            city_name,price = key, data[key]
+        city_name,price = data['city'], data['price']
         try:
-            price = float(data[key])
+            price = float(price)
         except Exception as e:
             price = 0
         state_obj,is_new_state = State.objects.get_or_create(name=state_name)
@@ -35,7 +34,6 @@ def get_latest_fuel_rate():
     for item in fuel_list:
         for state in state_code:
             for key in state:
-                print key
                 response = requests.post(url="https://fuelprice.p.mashape.com/",
                   headers={
                     "X-Mashape-Key": "jx4BiSi6U0mshgp6QifRhbg3YwAAp11sx6CjsnXQNhDiDnjalX",
@@ -45,7 +43,6 @@ def get_latest_fuel_rate():
                   data=(json.dumps({'fuel':item,'state':key}))
                 )
                 response =  json.loads(response.text)
-                # # import pdb;pdb.set_trace()
                 hp_provider = FuelCompany.objects.get(name='hp')
                 iocl_provider = FuelCompany.objects.get(name='iocl')
                 fuel_obj, is_created_new_obj = Fuel.objects.get_or_create(name=response['fuel'].lower())
