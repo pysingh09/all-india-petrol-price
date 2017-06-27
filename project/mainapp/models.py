@@ -41,5 +41,3 @@ class DailyRate(models.Model):
 
 	def __str__(self):
 		return self.city.name +' '+ self.fuel.name + ' '+str(self.price)
-	class Meta:
-		unique_together = ('fuel','city','provider')
